@@ -1,8 +1,9 @@
 import random
 import bad
 from commands import cs as cs
-
-pokemon = input("Input your pokemon's name: ")
+import pokemonList
+import pokemonart
+import moves
 
 class bcolors:
     HEADER = '\033[95m'
@@ -16,30 +17,29 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-print("\nfuck it, it's pikachu!\n")
-pika = """`;-.          ___,
-  `.`\_...._/`.-"`
-    \        /      ,
-    /()   () \    .' `-._
-   |)  .    ()\  /____.'
-   \  -'-     ,; '. <
-    ;.__     ,;|   > \
-    
-   / ,    / ,  |.-'.-'
-  (_/    (_/ ,;|.<`
-    \    ,     ;-`
-     >   \    /
-    (_,-'`> .'
-         (_,'"""
+while True:
+  print(bcolors.WARNING + bcolors.BOLD + "List of pokemon: " + bcolors.ENDC)
+  print(bcolors.OKGREEN + "\ncharmander\nbulbasaur\nsquirtle\n " + bcolors.ENDC)
+  pokemon = input("Input your pokemon's name: ").lower()
+  try:
+    pk = pokemonList.pokemons[pokemon]
+    break
+  except:
+    print(bcolors.FAIL + "That's not a pokemon you dumbass." + bcolors.ENDC)
+
+
+print(bcolors.OKBLUE + bcolors.BOLD + bcolors.UNDERLINE + "\n" + str(pk[pokemon]) + ", i choose you!\n" + bcolors.ENDC)
+pika = pokemonart.art[pokemon]
 
 
 print(pika)
 
 tbDelay = 0
 
-health = 100
-pp = 100
-defense = 5
+
+health = pk['health']
+pp = pk['pp']
+defense = pk['baseDef']
 
 ehealth = 100
 epp = 100
@@ -48,7 +48,9 @@ edefense = 5
 enemyMissTurn = 0
 missTurn = 0
 
-attacks = ['Scatch', 'Sleep', 'Mana drain', 'Thunderbolt']
+health = moves.scratch(health)
+
+attacks = [pk['move1']['name'], pk['move2']['name'], 'PP drain', pk['move4']['name']]
 
 def makeScreen():
   input('Press Enter to continue!')
@@ -79,10 +81,10 @@ def checkHealth():
   global health
 
   if(ehealth <= 0):
-    message('You win, faggot, good job.', bcolors.BOLD + bcolors.WARNING)
+    message('You win, good job.', bcolors.BOLD + bcolors.WARNING)
     exit()
   elif(health <= 0):
-    message('Fkn dumbass, lost to a rolling dice.', bcolors.FAIL)
+    message("Fkn dumbass, lost to a rolling dice.", bcolors.FAIL)
     exit()
 
 
@@ -129,7 +131,7 @@ def atk():
       else:
         message(pokemon + " doesn't have enough pp!", bcolors.OKBLUE)
     elif(attack == 3):
-      drain = random.randint(1,20)
+      drain = random.randint(5,20)
       epp -= drain
       pp += drain
       message(pokemon + " used {0}, you drained {1} mana!".format(attacks[2], drain), bcolors.OKBLUE)
@@ -141,7 +143,7 @@ def atk():
           dmg = random.randint(1,3)
           ehealth -= round(20*dmg / edefense, 0)
           message(pokemon + " used {0}, you did {1} damage!".format(attacks[3], round(20*dmg/edefense,0)), bcolors.OKBLUE)
-          if(random.randint(0,1) == 1):
+          if(random.randint(0,1) == 1 and edefense > 1):
             edefense -= 1
         else:
           message('Thunderbolt has a cooldown of 3 rounds, you have {0} left!'.format(tbDelay), bcolors.FAIL)
@@ -168,8 +170,8 @@ def eatk():
   global epp
   global possible_moves
 
-  if(epp < 5 or pp <= 0 and 2 in possible_moves):
-    possible_moves.remove(2)
+  if(epp < 5 or pp <= 0 ):
+    if(2 in possible_moves): possible_moves.remove(2)
   elif(2 not in possible_moves):
     possible_moves.append(2)
   if(epp < 10 and 4 in possible_moves):
@@ -189,7 +191,7 @@ def eatk():
       if(random.randint(1,4) == 4):
         missTurn = 1
     elif(attack == 3):
-      drain = random.randint(1,20)
+      drain = random.randint(5,20)
       pp -= drain
       epp += drain
       message("The enemy used {0}, they drained {1} mana!".format(attacks[2], drain), bcolors.OKBLUE)
@@ -198,7 +200,7 @@ def eatk():
         dmg = random.randint(1,3)
         health -= round(20*dmg / edefense,0)
         message("The enemy used {0}, they did {1} damage!".format(attacks[3], round(20*dmg/defense),0), bcolors.OKBLUE)
-        if(random.randint(0,1) == 1):
+        if(random.randint(0,1) == 1 and defense > 1):
           defense -= 1
   else:
     message("The enemies pokemon is confused, it did no damage.", bcolors.FAIL)
