@@ -1,13 +1,17 @@
-health = 0
-pp = 0
-defense = 0
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[36m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
-ehealth = 100
-epp = 100
-edefense = 5
 
 def scratch(health):
-  health = 10
+  print(bcolors.OKBLUE, "pokemon used scratch, oof")
   return health
 
 def flamethrower():
@@ -52,8 +56,7 @@ def super_fang():
 def wrap():
   pass
 
-def pp_drain():
-  pass
+
 
 def bite():
   pass
@@ -85,4 +88,7 @@ def rock_throw():
 def explosion():
   pass
 
+
+
+# PP drain is used 
   

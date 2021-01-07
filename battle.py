@@ -16,10 +16,10 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-
+## picking pokemon ##
 while True:
   print(bcolors.WARNING + bcolors.BOLD + "List of pokemon: " + bcolors.ENDC)
-  print(bcolors.OKGREEN + "\ncharmander\nbulbasaur\nsquirtle\n " + bcolors.ENDC)
+  print(bcolors.OKGREEN + '\n'.join(pokemonList.pokemons) + bcolors.ENDC)
   pokemon = input("Input your pokemon's name: ").lower()
   try:
     pk = pokemonList.pokemons[pokemon]
@@ -28,7 +28,8 @@ while True:
     print(bcolors.FAIL + "That's not a pokemon you dumbass." + bcolors.ENDC)
 
 
-print(bcolors.OKBLUE + bcolors.BOLD + bcolors.UNDERLINE + "\n" + str(pk[pokemon]) + ", i choose you!\n" + bcolors.ENDC)
+
+print(bcolors.OKBLUE + bcolors.BOLD + bcolors.UNDERLINE + "\n" + str(pk) + ", i choose you!\n" + bcolors.ENDC)
 pika = pokemonart.art[pokemon]
 
 
@@ -48,15 +49,16 @@ edefense = 5
 enemyMissTurn = 0
 missTurn = 0
 
-health = moves.scratch(health)
-
+## variable to save the selected pokemon's moves ##
 attacks = [pk['move1']['name'], pk['move2']['name'], 'PP drain', pk['move4']['name']]
 
+### simple function to prompt the user to press enter once they're ready to proceed to the next part of the fight and clear the screen ###
 def makeScreen():
   input('Press Enter to continue!')
   cs()
   print(pika)
 
+### function to make a message with a cool frame ###
 def message(msg, color):
   a = ''
   for i in range(len(msg)):
@@ -68,7 +70,7 @@ def message(msg, color):
   |{0}|
   {3}""".format(a, msg, color, bcolors.ENDC))
 
-  
+### function to print the status of the player and the enemy ###
 def printStats():
   message('Health: ' + str(health) + '  Pp: ' + str(pp) + '  Defense: ' + str(defense), bcolors.OKGREEN)
   message('Enemy health: ' + str(ehealth) + '  Enemy pp: ' + str(epp) + '  Enemy defense: ' + str(edefense), bcolors.OKGREEN)
@@ -76,6 +78,7 @@ def printStats():
 
 printStats()
 
+### function to check if the player or enemy have gone under 1hp to end the game ###
 def checkHealth():
   global ehealth
   global health
@@ -88,6 +91,8 @@ def checkHealth():
     exit()
 
 
+  ##### Main attack function for the player attacking #####
+ 
 def atk():
   global epp
   global ehealth
@@ -97,17 +102,18 @@ def atk():
   global pp
   global tbDelay
 
-
+  #### Prompt for player attacks ####
   atks = attacks[0] + ' - ' + attacks[1] + ' - ' + attacks[2] + ' - ' + attacks[3]
   message(atks, bcolors.WARNING)
   atek = input('select attack 1/2/3/4 : ')
   
+  #### check if the user input is valid ####
   try:
     int(atek)
   except:
     print(bcolors.FAIL + bad.threat + bcolors.ENDC)
     atk()
-
+  # variable to save attack choice #
   attack = int(atek)
 
   try:
@@ -116,6 +122,7 @@ def atk():
     print('\n' + bcolors.FAIL + bad.threat + bcolors.ENDC)
     atk()
 
+  #### executing attack ####
   if(not missTurn):
     if(attack == 1):
       ehealth -= round(10 / edefense, 0)
@@ -170,16 +177,7 @@ def eatk():
   global epp
   global possible_moves
 
-  if(epp < 5 or pp <= 0 ):
-    if(2 in possible_moves): possible_moves.remove(2)
-  elif(2 not in possible_moves):
-    possible_moves.append(2)
-  if(epp < 10 and 4 in possible_moves):
-    possible_moves.remove(4)
-  elif(4 not in possible_moves):
-    possible_moves.append(4)
-
-  attack = random.choice(possible_moves)
+  attack = random.randint(1,4)
 
   if(not enemyMissTurn):
     if(attack == 1):
